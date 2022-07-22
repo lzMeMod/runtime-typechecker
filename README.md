@@ -1,6 +1,8 @@
 # Runtime typechecker for Python methods
 This package provides a simple wrapper for methods to enforce type checking at runtime
 
+![PyPi publishing](https://github.com/lzMeMod/runtime-typechecker/actions/workflows/python-publish.yml/badge.svg)
+
 <!-- toc -->
 
 - [Limitations](#limitations)
