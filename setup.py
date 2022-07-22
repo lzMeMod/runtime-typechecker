@@ -4,7 +4,7 @@ from os.path import abspath, dirname, join
 README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
 
 setup(
-    name="runtime-typechecker",
+    name="lazy_runtime_typechecker",
     version="0.0.1",
     packages=find_packages(),
     description="Simple runtime typechecker",

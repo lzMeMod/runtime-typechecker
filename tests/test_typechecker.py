@@ -1,4 +1,4 @@
-from runtime_typechecker import static_typed, TypeingError, InputTypeingError, OutputTypeingError
+from lazy_runtime_typechecker import static_typed, TypeingError, InputTypeingError, OutputTypeingError
 import pytest
 
 def test_init_handling():

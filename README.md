@@ -27,13 +27,14 @@ something like [mypy](https://github.com/python/mypy)
 ## Installation
 Just run 
 ```bash
-pip install runtime-typechecker
+pip install lazy_runtime_typechecker
 ```
 
 ## Basic Usage
 This module contains one wrapper. This wrapper can be used to type check a function.
+
 ```python
-from runtime_typechecker import static_typed
+from lazy_runtime_typechecker import static_typed
 
 @static_typed(init_check=True)
 def my_function(x: str) -> str:
@@ -53,8 +54,9 @@ parameter that is set to true will add an additional performance penalty to the 
 If the parameter is set to true the signature of the arguments and the return type is checked even
 before the first call. Also, the default values are checked against the signature of the arguments.  
 Example:
+
 ```python
-from runtime_typechecker import static_typed
+from lazy_runtime_typechecker import static_typed
 
 @static_typed(init_check=False)
 def my_function(x: str = 12) -> str:
@@ -77,8 +79,9 @@ All other exceptions from this module are inheritance form this exception.
 ### check_input_args: bool = True
 If this parameter is set to `True` then the input values are checked each time the function is 
 called. The exception that is raised by an input validation is from type `runtime_typechecker.InputTypeingError`.
+
 ```python
-from runtime_typechecker import static_typed, InputTypeingError
+from lazy_runtime_typechecker import static_typed, InputTypeingError
 
 @static_typed(init_check=True, check_input_args=False)
 def my_function(x: str = "hi"):
@@ -102,8 +105,9 @@ except InputTypeingError:
 ### check_return_value: bool = True
 If this parameter is set to `True` then the return value is checked each time the function is 
 called. The exception that is raised by an input validation is from type `runtime_typechecker.InputTypeingError`.
+
 ```python
-from runtime_typechecker import static_typed, OutputTypeingError
+from lazy_runtime_typechecker import static_typed, OutputTypeingError
 
 @static_typed(init_check=True, check_return_value=False)
 def my_function(x: int) -> int:
@@ -130,8 +134,9 @@ represent nearly every possible typing expression. Of course with these more com
 the performance penalty increases. If this parameter is set to `True` generic types are also check 
 in full depth. If set to `False` only the first level of the generic type is matched. This behavior
 is applied for the input and the output stream.
+
 ```python
-from runtime_typechecker import static_typed
+from lazy_runtime_typechecker import static_typed
 
 @static_typed(init_check=True, check_generic_types=False)
 def my_function(x: list[str]) -> list[str]:

@@ -6,7 +6,7 @@ from inspect import signature, Parameter
 from types import GenericAlias
 from typing import Callable, Generic
 
-from runtime_typechecker.typechecker_errors import (
+from lazy_runtime_typechecker.typechecker_errors import (
     TypeingError,
     InputTypeingError,
     OutputTypeingError,
