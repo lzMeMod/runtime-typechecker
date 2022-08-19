@@ -12,7 +12,7 @@ if len(version) != 5:
 
 setup(
     name="lazy_runtime_typechecker",
-    version="0.0.1",
+    version=version,
     packages=find_packages(),
     description="Simple runtime typechecker",
     long_description=README_MD,
