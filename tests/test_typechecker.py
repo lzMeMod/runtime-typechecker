@@ -98,3 +98,20 @@ def test_return_type():
 
     with pytest.raises(OutputTypeingError):
         my_fuction("hi")
+
+
+def test_object_methods():
+    class MyTestClass:
+        @static_typed(init_check=True, defined_by_class=True)
+        def my_function(self, x: str) -> int:
+            return int(x)
+
+
+        @static_typed(init_check=True, defined_by_class=False)
+        @staticmethod
+        def my_static_function(x: str) -> str:
+            return x
+
+
+    ab = MyTestClass()
+    ab.my_function("12")

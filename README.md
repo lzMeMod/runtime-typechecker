@@ -13,6 +13,7 @@ This package provides a simple wrapper for methods to enforce type checking at r
   * [check_input_args: bool = True](#check_input_args-bool--true)
   * [check_return_value: bool = True](#check_return_value-bool--true)
   * [check_generic_types: bool = True](#check_generic_types-bool--true)
+  * [defined_by_class: bool = False](#defined_by_class-bool--false)
 - [Exception](#exception)
 
 <!-- tocstop -->
@@ -23,11 +24,12 @@ Let's talk about the limitations of this package first
 checking still works. But `Generics` and `Unions` are not working with the old systax. Have a look 
 at [PEP 604](https://peps.python.org/pep-0604/) for more information.
 * Performance: Of course checking something at runtime comes with a performance penalty. This module
-is intended to be used for only a few methods. If you need typechecking for everything consider using
-something like [mypy](https://github.com/python/mypy)
+is intended to be used for only a few methods were type checking is absolutely necessary. If you need typechecking for 
+everything consider using something like [mypy](https://github.com/python/mypy)
+* Non-callable object: normal function are callable object in python but a function with the `@classmethod` decorator
+is not callable. This Package **only** supports callable objects.
 
 ## Installation
-Just run 
 ```bash
 pip install lazy_runtime_typechecker
 ```
@@ -50,7 +52,7 @@ if __name__ == '__main__':
 The `@static_typed` wrapper takes different arguments to configure how the types are checked.
 The default is always `True` because the assumption is, that if someone adds this wrapper to a 
 function, they want to be really sure that nearly all cases are checked. Of course every single 
-parameter that is set to true will add an additional performance penalty to the type checker
+parameter that is set to true will add a performance penalty to the type checker (except `defined_by_class`).
 
 ### init_check: bool
 If the parameter is set to true the signature of the arguments and the return type is checked even
@@ -158,6 +160,31 @@ my_function([12, "hello world"])
 def my_function(x: tuple[str | list[int | float]]) -> dict[str, int]:
     return {"abc": 12}
 ```
+
+### defined_by_class: bool = False
+If a method is defined by a class, then set this parameter to True. This means the first parameter for passing the 
+instance of the class to the method is not checked.
+```python
+from lazy_runtime_typechecker import static_typed
+
+class MyTestClass:
+    @static_typed(init_check=True, defined_by_class=True)
+    def my_function(self, x: str) -> int:
+        return int(x)
+
+
+    @static_typed(init_check=True, defined_by_class=False)
+    @staticmethod
+    def my_static_function(x: str) -> str:
+        return x
+
+    # this does not work because a class method is not callable
+    @static_typed(init_check=True, defined_by_class=False)
+    @classmethod
+    def my_class_method(cls, x: str) -> str:
+        return cls()
+```
+
 ## Exception
 Three exception are part of this module.
 * `TypeingError(TypeError)`: is the base exception
