@@ -17,7 +17,7 @@ setup(
     description="Simple runtime typechecker",
     long_description=README_MD,
     long_description_content_type="text/markdown",
-    url="",
+    url="https://github.com/lzMeMod/runtime-typechecker",
     author_name="lzMeMod",
     classifiers=[
         "License :: OSI Approved :: MIT License",
