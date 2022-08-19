@@ -1,7 +1,14 @@
+from os import getenv
+
 from setuptools import setup, find_packages
 from os.path import abspath, dirname, join
 
 README_MD = open(join(dirname(abspath(__file__)), "README.md")).read()
+
+version = getenv("GITHUB_REF", "")
+version = version[version.find("v") + 1:]
+if len(version) != 5:
+    raise Exception("Version is not in the right format")
 
 setup(
     name="lazy_runtime_typechecker",
