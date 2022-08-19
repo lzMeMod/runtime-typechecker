@@ -12,16 +12,15 @@ from lazy_runtime_typechecker.typechecker_errors import (
     OutputTypeingError,
 )
 
+# pylint: disable=W0212, C0103
 empty_type = inspect._empty
 
-
+# pylint: disable=R0912
 def _single_argument_checker(
     type_of,
     argument,
     check_generic_types: bool = False,
-    error_class: TypeingError
-    | InputTypeingError
-    | OutputTypeingError = InputTypeingError,
+    error_class = InputTypeingError,
 ):
     if isinstance(type_of, (GenericAlias, Generic)):
         if check_generic_types:
@@ -29,7 +28,7 @@ def _single_argument_checker(
         type_of = type_of.__origin__
     if type_of is None and argument is not type_of:
         raise error_class(f"Type {type(argument)} is not {type_of}")
-    elif type_of is not None and not isinstance(argument, type_of):
+    if type_of is not None and not isinstance(argument, type_of):
         raise error_class(f"Type {type(argument)} is not {type_of}")
     if check_generic_types:
         if type_of in (tuple, list, set):
@@ -54,7 +53,9 @@ def _single_argument_checker(
                     )
 
                 if isinstance(value_type, (GenericAlias, Generic)):
-                    _single_argument_checker(value_type, value, check_generic_types=True)
+                    _single_argument_checker(
+                        value_type, value, check_generic_types=True
+                    )
                 elif not isinstance(value, value_type):
                     raise error_class(
                         f"The element '{value}' of type {type(value)} in the dict does not fit "
@@ -120,7 +121,7 @@ def _init_check_input(parameters):
 def _init_check_return_type(return_type):
     if return_type is empty_type:
         raise TypeingError(
-            f"No typing information was provided for the return type of the Callable"
+            "No typing information was provided for the return type of the Callable"
         )
 
 

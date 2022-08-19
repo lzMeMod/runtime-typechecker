@@ -1,10 +1,21 @@
+"""
+THis module contains all exceptions used at runtime
+"""
+
+
 class TypeingError(TypeError):
-    pass
+    """
+    Basic error for a type validation
+    """
 
 
 class InputTypeingError(TypeingError):
-    pass
+    """
+    Class for errors that are related to the input into a function.
+    """
 
 
 class OutputTypeingError(TypeingError):
-    pass
+    """
+    Class for errors that are related to the output a function generates.
+    """

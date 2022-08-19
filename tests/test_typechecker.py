@@ -1,5 +1,11 @@
-from lazy_runtime_typechecker import static_typed, TypeingError, InputTypeingError, OutputTypeingError
+from lazy_runtime_typechecker import (
+    static_typed,
+    TypeingError,
+    InputTypeingError,
+    OutputTypeingError,
+)
 import pytest
+
 
 def test_init_handling():
     @static_typed(init_check=True)
@@ -7,11 +13,19 @@ def test_init_handling():
         pass
 
     with pytest.raises(TypeingError):
+
+        @static_typed(init_check=True)
+        def _my_test_function(x: str):
+            pass
+
+    with pytest.raises(TypeingError):
+
         @static_typed(init_check=True)
         def _my_test_function(x) -> None:
             pass
 
     with pytest.raises(TypeingError):
+
         @static_typed(init_check=True)
         def _my_test_function(x: list[int | str] = [12.8]) -> None:
             pass
@@ -33,7 +47,6 @@ def test_args_checker():
 
     with pytest.raises(InputTypeingError):
         _my_test_function("abc", "abc")
-
 
     @static_typed(init_check=True, check_generic_types=True)
     def _my_test_function(x: str | int) -> str | int:
@@ -62,12 +75,21 @@ def test_args_checker():
     with pytest.raises(InputTypeingError):
         _my_test_function([12.5])
 
+    @static_typed(init_check=False)
+    def _my_test_function(y: int = 5) -> int:
+        return y
+
+    with pytest.raises(InputTypeingError):
+        _my_test_function(x=12)
+
+
 def test_dict_union():
     @static_typed(init_check=True, check_generic_types=True)
     def _my_test_function(x: dict[str, int]) -> None:
         return None
 
     _my_test_function(x={"hi": 12})
+
 
 def test_return_type():
     @static_typed(init_check=True)
@@ -76,5 +98,3 @@ def test_return_type():
 
     with pytest.raises(OutputTypeingError):
         my_fuction("hi")
-
-
