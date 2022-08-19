@@ -112,13 +112,6 @@ def test_object_methods():
         def my_static_function(x: str) -> str:
             return x
 
-        # this does not work because a class method is not callable
-        @static_typed(init_check=True, defined_by_class=False)
-        @classmethod
-        def my_class_method(cls, x: str) -> str:
-            return cls()
-
-
 
     ab = MyTestClass()
     ab.my_function("12")
