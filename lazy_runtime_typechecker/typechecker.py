@@ -20,7 +20,7 @@ def _single_argument_checker(
     type_of,
     argument,
     check_generic_types: bool = False,
-    error_class = InputTypeingError,
+    error_class=InputTypeingError,
 ):
     if isinstance(type_of, (GenericAlias, Generic)):
         if check_generic_types:
@@ -63,8 +63,12 @@ def _single_argument_checker(
                     )
 
 
-def _input_argument_checker(func, parameters, check_generic_types: bool = False):
+def _input_argument_checker(
+    func, parameters, check_generic_types: bool = False, defined_by_class: bool = False
+):
     def _check_input_wrapper(*args, **kwargs):
+        if defined_by_class:
+            args_cache, args = args, list(args)[1:]
         # check if to many arguments were passed to the function
         if (len(args) + len(kwargs)) > len(parameters):
             raise InputTypeingError("Too many vales")
@@ -85,7 +89,8 @@ def _input_argument_checker(func, parameters, check_generic_types: bool = False)
             _single_argument_checker(
                 temp_typing_information.annotation, temp_value, check_generic_types
             )
-
+        if defined_by_class:
+            args = args_cache
         return func(*args, **kwargs)
 
     return _check_input_wrapper
@@ -130,6 +135,7 @@ def static_typed(
     check_input_args: bool = True,
     check_return_value: bool = True,
     check_generic_types: bool = True,
+    defined_by_class: bool = False,
 ) -> Callable:
     """
     Decorator to enable strict type checking for a method
@@ -138,11 +144,14 @@ def static_typed(
     :param check_input_args: bool to specify if the input parameters should be checked
     :param check_return_value: bool to specify if the output parameters should be checked
     :param check_generic_types: bool to specify if generic types should be resolved
+    :param defined_by_class: set to true if method is defined inside a class
     :return: the wrapped function
     """
 
     def _wrapper_factory(func):
         parameters: dict[str, Parameter] = dict(signature(func).parameters)
+        if defined_by_class:
+            del parameters[list(parameters.keys())[0]]
         return_type = signature(func).return_annotation
         if init_check:
             _init_check_input(parameters)
@@ -150,7 +159,9 @@ def static_typed(
 
         out: Callable = func
         if check_input_args:
-            out = _input_argument_checker(out, parameters, check_generic_types)
+            out = _input_argument_checker(
+                out, parameters, check_generic_types, defined_by_class
+            )
         if check_return_value:
             out = _output_type_checker(out, return_type, check_generic_types)
         return out
